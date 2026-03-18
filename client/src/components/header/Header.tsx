@@ -21,7 +21,7 @@ export default function Header() {
         <input
           type="text"
           placeholder="Rechercher"
-          className="input input-bordered w-24 md:hidden rounded-xl outline-none"
+          className="input input-bordered w-37 md:hidden rounded-xl outline-none"
         />
         <div className="dropdown dropdown-end">
           <button
