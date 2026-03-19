@@ -1,10 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import type { ErrorRequestHandler } from "express";
 import swaggerUi from "swagger-ui-express";
+import authRoutes from "./routes/authRoutes";
 import routerTest from "./routes/health";
+import userRoutes from "./routes/userRoutes";
 import { swaggerSpec } from "./swagger";
 
 const app = express();
@@ -14,12 +17,15 @@ if (process.env.CLIENT_URL != null) {
 }
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 // app.use(express.text());
 // app.use(express.raw());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/api", routerTest);
+app.use("/api", userRoutes);
+app.use("/api", authRoutes);
 
 const publicFolderPath = path.join(__dirname, "../../server/public");
 

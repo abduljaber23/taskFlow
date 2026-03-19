@@ -6,6 +6,7 @@ const routerTest = express.Router();
  * /health:
  *   get:
  *     summary: Health check
+ *     tags: [Health]
  *     responses:
  *       200:
  *         description: OK
