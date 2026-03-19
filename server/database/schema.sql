@@ -15,26 +15,26 @@ CREATE TABLE Projects (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     status ENUM('public', 'private') DEFAULT 'private',
-    createdBy INT NOT NULL,
+    createdBy VARCHAR(36) NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (createdBy) REFERENCES Users(id) ON DELETE CASCADE
+
+    FOREIGN KEY (createdBy) REFERENCES Users(uuid) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE ProjectMembers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     uuid VARCHAR(36) NOT NULL UNIQUE,
     role ENUM('owner', 'member') DEFAULT 'member',
-    userId INT NOT NULL,
-    projectId INT NOT NULL,
+    userId VARCHAR(36) NOT NULL,
+    projectId VARCHAR(36) NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     UNIQUE KEY unique_member (userId, projectId),
 
-    FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE,
-    FOREIGN KEY (projectId) REFERENCES Projects(id) ON DELETE CASCADE
+    FOREIGN KEY (userId) REFERENCES Users(uuid) ON DELETE CASCADE,
+    FOREIGN KEY (projectId) REFERENCES Projects(uuid) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE `ProjectColumns` (
@@ -42,11 +42,11 @@ CREATE TABLE `ProjectColumns` (
     uuid VARCHAR(36) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     position INT NOT NULL,
-    projectId INT NOT NULL,
+    projectId VARCHAR(36) NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (projectId) REFERENCES Projects(id) ON DELETE CASCADE
+    FOREIGN KEY (projectId) REFERENCES Projects(uuid) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE Tasks (
@@ -57,11 +57,11 @@ CREATE TABLE Tasks (
     priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
     position INT NOT NULL,
     isCompleted BOOLEAN DEFAULT FALSE,
-    userId INT,
-    columnId INT NOT NULL,
+    userId VARCHAR(36),
+    columnId VARCHAR(36) NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE SET NULL,
-    FOREIGN KEY (columnId) REFERENCES `ProjectColumns`(id) ON DELETE CASCADE
+    FOREIGN KEY (userId) REFERENCES Users(uuid) ON DELETE SET NULL,
+    FOREIGN KEY (columnId) REFERENCES `ProjectColumns`(uuid) ON DELETE CASCADE
 ) ENGINE=InnoDB;

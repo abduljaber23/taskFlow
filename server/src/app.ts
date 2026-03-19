@@ -7,6 +7,7 @@ import type { ErrorRequestHandler } from "express";
 import swaggerUi from "swagger-ui-express";
 import authRoutes from "./routes/authRoutes";
 import routerTest from "./routes/health";
+import projectRoutes from "./routes/projectRoutes";
 import userRoutes from "./routes/userRoutes";
 import { swaggerSpec } from "./swagger";
 
@@ -26,6 +27,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api", routerTest);
 app.use("/api", userRoutes);
 app.use("/api", authRoutes);
+app.use("/api", projectRoutes);
 
 const publicFolderPath = path.join(__dirname, "../../server/public");
 
