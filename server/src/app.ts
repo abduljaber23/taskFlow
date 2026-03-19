@@ -6,6 +6,7 @@ import express from "express";
 import type { ErrorRequestHandler } from "express";
 import swaggerUi from "swagger-ui-express";
 import authRoutes from "./routes/authRoutes";
+import columnRoutes from "./routes/columnRoutes";
 import routerTest from "./routes/health";
 import projectRoutes from "./routes/projectRoutes";
 import userRoutes from "./routes/userRoutes";
@@ -28,6 +29,7 @@ app.use("/api", routerTest);
 app.use("/api", userRoutes);
 app.use("/api", authRoutes);
 app.use("/api", projectRoutes);
+app.use("/api", columnRoutes);
 
 const publicFolderPath = path.join(__dirname, "../../server/public");
 
