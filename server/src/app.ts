@@ -9,6 +9,7 @@ import authRoutes from "./routes/authRoutes";
 import columnRoutes from "./routes/columnRoutes";
 import routerTest from "./routes/health";
 import projectRoutes from "./routes/projectRoutes";
+import taskRoutes from "./routes/taskRoutes";
 import userRoutes from "./routes/userRoutes";
 import { swaggerSpec } from "./swagger";
 
@@ -30,6 +31,7 @@ app.use("/api", userRoutes);
 app.use("/api", authRoutes);
 app.use("/api", projectRoutes);
 app.use("/api", columnRoutes);
+app.use("/api", taskRoutes);
 
 const publicFolderPath = path.join(__dirname, "../../server/public");
 

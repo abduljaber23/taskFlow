@@ -9,8 +9,6 @@ const userRoutes = express.Router();
  * /users/profile:
  *   get:
  *     summary: Get user profile
- *     security:
- *       - bearerAuth: []
  *     tags: [Users]
  *     responses:
  *       200:
@@ -27,8 +25,6 @@ userRoutes.get("/users/profile", verifyToken, userController.profile);
  * /users:
  *   get:
  *     summary: Get all users
- *     security:
- *       - bearerAuth: []
  *     tags: [Users]
  *     responses:
  *       200:
@@ -45,8 +41,6 @@ userRoutes.get("/users", verifyToken, userController.browse);
  * /users/{uuid}:
  *   get:
  *     summary: Get a user by UUID
- *     security:
- *       - bearerAuth: []
  *     tags: [Users]
  *     parameters:
  *       - in: path
@@ -70,8 +64,6 @@ userRoutes.get("/users/:uuid", verifyToken, userController.read);
  * /users/{uuid}:
  *   delete:
  *     summary: Delete a user by UUID
- *     security:
- *       - bearerAuth: []
  *     tags: [Users]
  *     parameters:
  *       - in: path
@@ -95,8 +87,6 @@ userRoutes.delete("/users/:uuid", verifyToken, userController.destroy);
  * /users/{uuid}:
  *   put:
  *     summary: Update a user by UUID
- *     security:
- *       - bearerAuth: []
  *     tags: [Users]
  *     parameters:
  *       - in: path

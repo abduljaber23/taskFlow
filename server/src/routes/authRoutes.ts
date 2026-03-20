@@ -61,8 +61,6 @@ authRoutes.post("/auth/login", auth.login);
  * /auth/logout:
  *   post:
  *     summary: Logout a user
- *     security:
- *       - bearerAuth: []
  *     tags: [Auth]
  *     responses:
  *       200:

@@ -10,8 +10,6 @@ const projectRoutes = express.Router();
  *   get:
  *     summary: Get all projects
  *     tags: [Projects]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A project object
@@ -20,7 +18,7 @@ const projectRoutes = express.Router();
  *       404:
  *         description: Project not found
  */
-projectRoutes.get("/projects", projectController.browse);
+projectRoutes.get("/projects", verifyToken, projectController.browse);
 
 /**
  * @swagger
@@ -28,8 +26,6 @@ projectRoutes.get("/projects", projectController.browse);
  *   get:
  *     summary: Get a project by UUID
  *     tags: [Projects]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: uuid
@@ -44,7 +40,7 @@ projectRoutes.get("/projects", projectController.browse);
  *       404:
  *         description: Project not found
  */
-projectRoutes.get("/projects/:uuid", projectController.read);
+projectRoutes.get("/projects/:uuid", verifyToken, projectController.read);
 
 /**
  * @swagger
@@ -52,8 +48,6 @@ projectRoutes.get("/projects/:uuid", projectController.read);
  *   post:
  *     summary: Create a new project
  *     tags: [Projects]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -83,8 +77,6 @@ projectRoutes.post("/projects", verifyToken, projectController.add);
  *   delete:
  *     summary: Delete a project by UUID
  *     tags: [Projects]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: uuid
@@ -107,8 +99,6 @@ projectRoutes.delete("/projects/:uuid", verifyToken, projectController.destroy);
  *   put:
  *     summary: Update a project by UUID
  *     tags: [Projects]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: uuid

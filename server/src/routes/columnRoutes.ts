@@ -10,8 +10,6 @@ const columnRoutes = express.Router();
  *   get:
  *     summary: Get all columns for a specific project
  *     tags: [Columns]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: projectUuid
@@ -29,6 +27,7 @@ const columnRoutes = express.Router();
  */
 columnRoutes.get(
   "/columns/project/:projectUuid",
+  verifyToken,
   columnController.browseAllByProjectUuid,
 );
 
@@ -38,8 +37,6 @@ columnRoutes.get(
  *   get:
  *     summary: Get a column by UUID
  *     tags: [Columns]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: uuid
@@ -63,8 +60,6 @@ columnRoutes.get("/columns/:uuid", verifyToken, columnController.read);
  *   post:
  *     summary: Create a new column
  *     tags: [Columns]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -92,8 +87,6 @@ columnRoutes.post("/columns", verifyToken, columnController.add);
  *   put:
  *     summary: Update a column by UUID
  *     tags: [Columns]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: uuid
@@ -128,8 +121,6 @@ columnRoutes.put("/columns/:uuid", verifyToken, columnController.edit);
  *   delete:
  *     summary: Delete a column by UUID
  *     tags: [Columns]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: uuid
