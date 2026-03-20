@@ -80,7 +80,7 @@ const add: RequestHandler = async (req: AuthRequest, res, next) => {
       position: generatePosition(),
       isCompleted: false,
       columnUuid,
-      userUuid: user.userId,
+      userUuid: user.userUuid,
     };
     const result = await taskRepository.create(newTask);
     res.status(201).json({ message: "Task created", taskId: result.insertId });
@@ -136,7 +136,7 @@ const edit: RequestHandler = async (req: AuthRequest, res, next) => {
       position,
       isCompleted,
       columnUuid,
-      userUuid: user.userId,
+      userUuid: user.userUuid,
     });
 
     if (result.affectedRows === 0) {

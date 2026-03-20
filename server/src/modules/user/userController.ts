@@ -49,7 +49,7 @@ const edit: RequestHandler = async (req: AuthRequest, res, next) => {
   const { email, username, password } = req.body;
   const itemUUID = req.params.uuid;
   try {
-    if (req.user?.userId !== req.params.uuid) {
+    if (req.user?.userUuid !== req.params.uuid) {
       res.status(403).json({ message: "Accès interdit" });
       return;
     }

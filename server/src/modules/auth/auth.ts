@@ -54,7 +54,7 @@ const login: RequestHandler = async (req, res, next) => {
       res.status(401).json({ message: "Email ou mot de passe incorrect" });
     }
     const payload: JwtPayload = {
-      userId: user.uuid,
+      userUuid: user.uuid,
       email: user.email,
       username: user.username,
       role: user.role,

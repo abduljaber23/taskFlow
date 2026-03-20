@@ -15,16 +15,44 @@ const browse: RequestHandler = async (req, res, next) => {
   }
 };
 
-const read: RequestHandler = async (req, res, next) => {
+const browseByUser: RequestHandler = async (req: AuthRequest, res, next) => {
   try {
-    const itemUUID = req.params.uuid;
-    const item = await projectRepository.findOneByUUId(itemUUID);
-
-    if (item == null) {
-      res.json({ message: "Project not found", status: 404 }).status(404);
-    } else {
-      res.json(item);
+    const userId = req.user?.userUuid;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
     }
+
+    const projects = await projectRepository.findAllProjectsByUserUuid(userId);
+    res.json(projects);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const read: RequestHandler = async (req: AuthRequest, res, next) => {
+  try {
+    const user = req.user;
+    const projectUUID = req.params.uuid;
+
+    if (!user) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
+    const project = await projectRepository.findOneByUUId(projectUUID);
+
+    if (!project) {
+      res.status(404).json({ message: "Project not found" });
+      return;
+    }
+
+    if (project.status === "private" && project.createdBy !== user.userUuid) {
+      res.status(403).json({ message: "Accès interdit" });
+      return;
+    }
+    console.log(project.status, user.userUuid, project.createdBy);
+    res.json(project);
   } catch (err) {
     next(err);
   }
@@ -32,13 +60,13 @@ const read: RequestHandler = async (req, res, next) => {
 
 const destroy: RequestHandler = async (req: AuthRequest, res, next) => {
   try {
-    const itemUUID = req.params.uuid;
-    const project = await projectRepository.findOneByUUId(itemUUID);
-    if (!project || project.createdBy !== req.user?.userId) {
+    const projectUUID = req.params.uuid;
+    const project = await projectRepository.findOneByUUId(projectUUID);
+    if (!project || project.createdBy !== req.user?.userUuid) {
       res.status(403).json({ message: "Accès interdit" });
       return;
     }
-    const result = await projectRepository.delete(itemUUID);
+    const result = await projectRepository.delete(projectUUID);
 
     if (result.affectedRows === 0) {
       res.status(404).json({ message: "Projet non trouvé" });
@@ -53,7 +81,7 @@ const destroy: RequestHandler = async (req: AuthRequest, res, next) => {
 const add: RequestHandler = async (req: AuthRequest, res, next) => {
   const { name, description, status } = req.body;
   try {
-    if (!req.user || !req.user.userId) {
+    if (!req.user || !req.user.userUuid) {
       res.status(401).json({ message: "Unauthorized" });
       return;
     }
@@ -72,12 +100,12 @@ const add: RequestHandler = async (req: AuthRequest, res, next) => {
       name,
       description,
       status,
-      createdBy: req.user.userId,
+      createdBy: req.user.userUuid,
     };
     const result = await projectRepository.create(newProject);
     res.status(201).json({
       message: "Project crée  avec succés!",
-      userId: result.insertId,
+      userUuid: result.insertId,
     });
   } catch (err) {
     next(err);
@@ -95,7 +123,7 @@ const edit: RequestHandler = async (req: AuthRequest, res, next) => {
       return;
     }
 
-    if (project.createdBy !== user.userId) {
+    if (project.createdBy !== user.userUuid) {
       res.status(403).json({ message: "Accès interdit" });
       return;
     }
@@ -105,7 +133,7 @@ const edit: RequestHandler = async (req: AuthRequest, res, next) => {
       name,
       description,
       status,
-      createdBy: user.userId,
+      createdBy: user.userUuid,
     });
 
     if (result.affectedRows === 0) {
@@ -119,4 +147,4 @@ const edit: RequestHandler = async (req: AuthRequest, res, next) => {
   }
 };
 
-export default { add, destroy, read, browse, edit };
+export default { add, destroy, read, browse, browseByUser, edit };

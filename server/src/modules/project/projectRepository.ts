@@ -15,6 +15,18 @@ export default class projectRepository {
     }
   }
 
+  async findAllProjectsByUserUuid(userUuid: string) {
+    try {
+      const [rows] = await client.query<IProject[]>(
+        `${selectSql} WHERE createdBy = ?`,
+        [userUuid],
+      );
+      return rows;
+    } catch (error) {
+      throw new Error(`Erreur lors de la récupération des projets: ${error}`);
+    }
+  }
+
   async findOneById(id: number) {
     try {
       const [rows] = await client.query<IProject[]>(

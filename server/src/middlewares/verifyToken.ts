@@ -21,6 +21,7 @@ export const verifyToken = (
 
     if (!token) {
       res.status(401).json({ message: "Token manquant" });
+      return;
     }
 
     const decoded = jwt.verify(

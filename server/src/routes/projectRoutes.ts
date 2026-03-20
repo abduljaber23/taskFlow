@@ -22,6 +22,32 @@ projectRoutes.get("/projects", verifyToken, projectController.browse);
 
 /**
  * @swagger
+ * /projects/user/{uuid}:
+ *   get:
+ *     summary: Get all projects by user UUID
+ *     tags: [Projects]
+ *     parameters:
+ *      - in: path
+ *        name: uuid
+ *        schema:
+ *          type: string
+ *        required: true
+ *     responses:
+ *       200:
+ *         description: A project object
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Project not found
+ */
+projectRoutes.get(
+  "/projects/user/:uuid",
+  verifyToken,
+  projectController.browseByUser,
+);
+
+/**
+ * @swagger
  * /projects/{uuid}:
  *   get:
  *     summary: Get a project by UUID
