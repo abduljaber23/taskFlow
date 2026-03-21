@@ -1,15 +1,17 @@
+import { Navigate } from "react-router";
+import { useAuth } from "../../contexts/authContext";
+
 export default function Home() {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
   return (
     <>
-      <div className="flex flex-col items-center justify-center">
-        <h1 className="text-4xl font-bold mb-4">
-          Bienvenue sur notre application de gestion de tâches
-        </h1>
-        <p className="text-lg text-center mb-6">
-          Organisez votre travail et améliorez votre productivité avec notre
-          application de gestion de tâches.
-        </p>
-      </div>
+      <h1 className="text-3xl font-bold text-center mt-10">
+        Bienvenue sur TaskFlow, {user.username} !
+      </h1>
     </>
   );
 }
