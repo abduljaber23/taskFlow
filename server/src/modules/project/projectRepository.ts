@@ -18,7 +18,7 @@ export default class projectRepository {
   async findAllProjectsByUserUuid(userUuid: string) {
     try {
       const [rows] = await client.query<IProject[]>(
-        `${selectSql} WHERE createdBy = ?`,
+        `${selectSql} WHERE createdBy = ? ORDER BY createdAt DESC`,
         [userUuid],
       );
       return rows;

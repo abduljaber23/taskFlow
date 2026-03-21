@@ -1,4 +1,5 @@
 import { Navigate } from "react-router";
+import Project from "../../components/project/Project";
 import { useAuth } from "../../contexts/authContext";
 
 export default function Home() {
@@ -9,9 +10,7 @@ export default function Home() {
   }
   return (
     <>
-      <h1 className="text-3xl font-bold text-center mt-10">
-        Bienvenue sur TaskFlow, {user.username} !
-      </h1>
+      <Project />
     </>
   );
 }

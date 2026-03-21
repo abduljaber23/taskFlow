@@ -8,6 +8,8 @@ import Login from "./pages/auth/Login.tsx";
 import Register from "./pages/auth/Register.tsx";
 import Home from "./pages/home/Home";
 import Profile from "./pages/profile/Profile.tsx";
+import Create from "./pages/project/Create.tsx";
+import ProjectUuid from "./pages/project/ProjectUuid.tsx";
 import About from "./pages/static pages/About";
 import Contact from "./pages/static pages/Contact";
 import Privacy from "./pages/static pages/Privacy";
@@ -18,35 +20,48 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/",
+        index: true,
         element: <Home />,
       },
       {
-        path: "/register",
+        path: "projects",
+        children: [
+          {
+            path: "create",
+            element: <Create />,
+          },
+          {
+            path: ":uuid",
+            element: <ProjectUuid />,
+          },
+        ],
+      },
+      {
+        path: "register",
         element: <Register />,
       },
       {
-        path: "/login",
+        path: "login",
         element: <Login />,
       },
       {
-        path: "/profile",
+        path: "profile",
         element: <Profile />,
       },
       {
-        path: "/about",
+        path: "about",
         element: <About />,
       },
       {
-        path: "/terms",
+        path: "terms",
         element: <Terms />,
       },
       {
-        path: "/privacy",
+        path: "privacy",
         element: <Privacy />,
       },
       {
-        path: "/contact",
+        path: "contact",
         element: <Contact />,
       },
     ],
