@@ -45,7 +45,7 @@ export default function Project() {
         <div className="flex justify-center md:justify-between items-center mb-8">
           <Link
             to="/projects/create"
-            className="btn btn-success btn-sm md:btn-md"
+            className="btn btn-success text-white btn-sm md:btn-md"
           >
             + Créer un projet
           </Link>
@@ -60,7 +60,7 @@ export default function Project() {
             {projects.map((project: IProject) => (
               <div
                 key={project.uuid}
-                className="card bg-base-300 border border-base-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200"
+                className="card bg-mist-950 border border-base-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200"
               >
                 <div className="card-body flex flex-col justify-between p-5">
                   <div>
@@ -68,8 +68,8 @@ export default function Project() {
                       <span
                         className={`badge ${
                           project.status === "public"
-                            ? "badge-success"
-                            : "badge-error"
+                            ? "badge-success text-white"
+                            : "badge-error text-white"
                         }`}
                       >
                         {project.status === "public" ? "Public" : "Privé"}
@@ -84,15 +84,16 @@ export default function Project() {
                       </button>
                     </div>
 
-                    <h2 className="card-title text-lg">{project.name}</h2>
-
-                    <p className="text-sm text-base-content/70 mt-1 line-clamp-3">
+                    <h2 className="card-title text-lg text-indigo-50">
+                      {project.name}
+                    </h2>
+                    <p className="text-sm text-indigo-100 mt-1 line-clamp-3">
                       {project.description}
                     </p>
                   </div>
 
                   <div className="mt-5 flex items-center justify-between">
-                    <p className="text-xs text-base-content/50">
+                    <p className="text-xs text-indigo-100">
                       {new Date(project.createdAt).toLocaleDateString()} —{" "}
                       {new Date(project.createdAt).getHours()}h
                       {new Date(project.createdAt).getMinutes()}
@@ -100,7 +101,7 @@ export default function Project() {
 
                     <Link
                       to={`/projects/${project.uuid}`}
-                      className="btn btn-secondary btn-sm"
+                      className="btn btn-soft btn-sm text-sm"
                     >
                       Voir le projet
                     </Link>
