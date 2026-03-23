@@ -148,13 +148,9 @@ export default function ColumnsDisplay() {
                       }
                       title={task.priority}
                     />
-                    &nbsp; {task.name}
+                    &nbsp; {task.content}
                   </h3>
-                  <input
-                    type="checkbox"
-                    id=""
-                    className="checkbox checkbox-sm"
-                  />
+                  <input type="checkbox" className="checkbox checkbox-sm" />
                 </div>
               ))}
               <form

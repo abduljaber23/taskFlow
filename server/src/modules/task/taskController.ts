@@ -48,8 +48,8 @@ const read: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req: AuthRequest, res, next) => {
   try {
-    const { name, description, priority, columnUuid } = req.body;
-    if (!description || !priority) {
+    const { content, priority, columnUuid } = req.body;
+    if (!content || !priority) {
       res.status(400).json({ message: "All fields are required" });
       return;
     }
@@ -74,8 +74,7 @@ const add: RequestHandler = async (req: AuthRequest, res, next) => {
 
     const newTask: TaskDTO = {
       uuid: uuidv4(),
-      name,
-      description,
+      content,
       priority,
       position: generatePosition(),
       isCompleted: false,
@@ -113,8 +112,7 @@ const destroy: RequestHandler = async (req: AuthRequest, res, next) => {
 
 const edit: RequestHandler = async (req: AuthRequest, res, next) => {
   const taskUUID = req.params.uuid;
-  const { name, description, priority, position, isCompleted, columnUuid } =
-    req.body;
+  const { content, priority, position, isCompleted, columnUuid } = req.body;
   try {
     const user = req.user;
     if (!user) {
@@ -130,8 +128,7 @@ const edit: RequestHandler = async (req: AuthRequest, res, next) => {
 
     const result = await taskRepository.update(taskUUID, {
       uuid: taskUUID,
-      name,
-      description,
+      content,
       priority,
       position,
       isCompleted,

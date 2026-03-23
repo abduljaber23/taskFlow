@@ -45,9 +45,7 @@ taskRoutes.get(
  *           schema:
  *             type: object
  *             properties:
- *               name:
- *                 type: string
- *               description:
+ *               content:
  *                 type: string
  *               priority:
  *                 type: string
@@ -108,9 +106,7 @@ taskRoutes.delete("/tasks/:uuid", verifyToken, taskController.destroy);
  *           schema:
  *             type: object
  *             properties:
- *               name:
- *                 type: string
- *               description:
+ *               content:
  *                 type: string
  *               priority:
  *                 type: string

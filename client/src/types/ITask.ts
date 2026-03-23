@@ -1,8 +1,7 @@
 export interface ITask {
   id: number;
   uuid: string;
-  name: string;
-  description: string;
+  content: string;
   priority: "low" | "medium" | "high";
   position: number;
   isCompleted: boolean;

@@ -52,8 +52,7 @@ CREATE TABLE `ProjectColumns` (
 CREATE TABLE Tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     uuid VARCHAR(36) NOT NULL UNIQUE,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
+    content TEXT NOT NULL,
     priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
     position INT NOT NULL,
     isCompleted BOOLEAN DEFAULT FALSE,

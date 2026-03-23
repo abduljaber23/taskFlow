@@ -4,7 +4,7 @@ import type { TaskDTO } from "../../dto/TaskDTO";
 import type { ITask } from "../../interfaces/ITask";
 
 const selectSql =
-  "SELECT id, uuid, name, description, priority, position, isCompleted, columnId, userId, createdAt, updatedAt FROM tasks";
+  "SELECT id, uuid, content, priority, position, isCompleted, columnId, userId, createdAt, updatedAt FROM tasks";
 export default class TaskRepository {
   async findAllByColumnUuid(columnUuid: string) {
     try {
@@ -33,11 +33,10 @@ export default class TaskRepository {
   async create(task: TaskDTO) {
     try {
       const [result] = await client.query<ResultSetHeader>(
-        "INSERT INTO tasks (uuid, name, description, priority, position, isCompleted, columnId, userId) VALUES (?,?,?,?,?,?,?,?)",
+        "INSERT INTO tasks (uuid, content, priority, position, isCompleted, columnId, userId) VALUES (?,?,?,?,?,?,?)",
         [
           task.uuid,
-          task.name,
-          task.description,
+          task.content,
           task.priority,
           task.position,
           task.isCompleted,
@@ -68,17 +67,13 @@ export default class TaskRepository {
       const fields = [];
       const values = [];
 
-      if (task.name !== undefined) {
-        fields.push("name = ?");
-        values.push(task.name);
+      if (task.content !== undefined) {
+        fields.push("content = ?");
+        values.push(task.content);
       }
       if (task.position !== undefined) {
         fields.push("position = ?");
         values.push(task.position);
-      }
-      if (task.description !== undefined) {
-        fields.push("description = ?");
-        values.push(task.description);
       }
       if (task.priority !== undefined) {
         fields.push("priority = ?");
