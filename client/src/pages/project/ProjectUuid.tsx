@@ -1,6 +1,9 @@
-import { useParams } from "react-router";
+import ColumnsDisplay from "../../components/columnsDisplay/ColumnsDisplay";
 
 export default function ProjectUuid() {
-  const { uuid } = useParams();
-  return <div>ProjectUuid: {uuid}</div>;
+  return (
+    <>
+      <ColumnsDisplay />
+    </>
+  );
 }
