@@ -147,4 +147,40 @@ const edit: RequestHandler = async (req: AuthRequest, res, next) => {
   }
 };
 
-export default { browseAllByColumnUuid, add, destroy, read, edit };
+const toggle: RequestHandler = async (req: AuthRequest, res, next) => {
+  const taskUUID = req.params.uuid;
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
+    const task = await taskRepository.findOneByUUId(taskUUID);
+    if (!task) {
+      res.status(404).json({ message: "Task not found" });
+      return;
+    }
+
+    const result = await taskRepository.update(taskUUID, {
+      uuid: task.uuid,
+      content: task.content,
+      priority: task.priority,
+      userUuid: task.userUuid,
+      columnUuid: task.columnUuid,
+      position: task.position,
+      isCompleted: !task.isCompleted,
+    });
+
+    if (result.affectedRows === 0) {
+      res.status(404).json({ message: "Task not found" });
+      return;
+    }
+
+    res.json({ message: "Task toggled successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { browseAllByColumnUuid, add, destroy, read, edit, toggle };

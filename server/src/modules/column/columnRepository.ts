@@ -9,7 +9,7 @@ export default class ColumnRepository {
   async findAllByProjectUuid(projectUuid: string) {
     try {
       const [rows] = await client.query<IColumn[]>(
-        `${selectSql} WHERE projectId = ? ORDER BY position ASC`,
+        `${selectSql} WHERE projectId = ? ORDER BY createdAt ASC`,
         [projectUuid],
       );
       return rows;

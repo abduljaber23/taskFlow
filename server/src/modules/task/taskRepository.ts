@@ -102,4 +102,16 @@ export default class TaskRepository {
       throw new Error(`Erreur lors de la mise à jour de la tâche: ${error}`);
     }
   }
+
+  async isComplete(uuid: string) {
+    try {
+      const [result] = await client.execute<ResultSetHeader>(
+        "UPDATE tasks SET isCompleted = NOT isCompleted WHERE uuid = ?",
+        [uuid],
+      );
+      return result;
+    } catch (error) {
+      throw new Error(`Erreur lors de la mise à jour de la tâche: ${error}`);
+    }
+  }
 }

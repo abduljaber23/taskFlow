@@ -111,6 +111,81 @@ export default function ColumnsDisplay() {
     }
   };
 
+  const [taskFormData, setTaskFormData] = useState({
+    content: "",
+    priority: "medium" as "low" | "medium" | "high",
+    columnUuid: "",
+  });
+
+  const handleTaskChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = event.target;
+    setTaskFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleTaskSubmit = async (
+    event: React.FormEvent<HTMLFormElement>,
+    columnUuid: string,
+  ) => {
+    event.preventDefault();
+    if (!taskFormData.content) return;
+
+    try {
+      const payload = { ...taskFormData, columnUuid };
+
+      await fetch(`${API_URL}/tasks`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const res = await fetch(`${API_URL}/tasks/column/${columnUuid}`, {
+        credentials: "include",
+      });
+      const data = await res.json();
+
+      setTasks((prev) => ({
+        ...prev,
+        [columnUuid]: Array.isArray(data) ? data : [],
+      }));
+
+      setTaskFormData({ content: "", priority: "medium", columnUuid: "" });
+
+      (event.target as HTMLFormElement).hidden = true;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const isCompleted = async (taskUuid: string) => {
+    try {
+      await fetch(`${API_URL}/tasks/${taskUuid}/toggle`, {
+        method: "PATCH",
+        credentials: "include",
+      });
+
+      const columnUuid = Object.keys(tasks).find((key) =>
+        tasks[key].some((task) => task.uuid === taskUuid),
+      );
+
+      if (columnUuid) {
+        const res = await fetch(`${API_URL}/tasks/column/${columnUuid}`, {
+          credentials: "include",
+        });
+        const data = await res.json();
+
+        setTasks((prev) => ({
+          ...prev,
+          [columnUuid]: Array.isArray(data) ? data : [],
+        }));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="flex flex-row gap-5 overflow-x-auto items-start">
       {
@@ -150,20 +225,45 @@ export default function ColumnsDisplay() {
                     />
                     &nbsp; {task.content}
                   </h3>
-                  <input type="checkbox" className="checkbox checkbox-sm" />
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-sm"
+                    onClick={() => isCompleted(task.uuid)}
+                    checked={task.isCompleted}
+                  />
                 </div>
               ))}
               <form
+                onSubmit={(e) => handleTaskSubmit(e, column.uuid)}
                 hidden
-                className="flex flex-row items-center gap-2 px-3 mt-3"
+                className="flex flex-col gap-2 px-3 mt-3"
               >
                 <input
+                  name="content"
+                  value={taskFormData.content}
+                  onChange={handleTaskChange}
                   type="text"
                   placeholder="Ajouter une tâche..."
-                  className="input w-full mb-2 focus:outline-none"
+                  className="input input-sm w-full focus:outline-none"
                 />
-                <button type="submit">
-                  <IoMdAdd size={35} />
+
+                <select
+                  name="priority"
+                  value={taskFormData.priority}
+                  onChange={handleTaskChange}
+                  className="select select-sm w-full focus:outline-none"
+                >
+                  <option value="low">Basse</option>
+                  <option value="medium">Moyenne</option>
+                  <option value="high">Élevée</option>
+                </select>
+
+                <button
+                  type="submit"
+                  className="btn btn-sm btn-primary w-full flex items-center justify-center gap-1"
+                >
+                  <IoMdAdd size={18} />
+                  Ajouter
                 </button>
               </form>
               <button

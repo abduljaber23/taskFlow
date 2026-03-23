@@ -126,4 +126,27 @@ taskRoutes.delete("/tasks/:uuid", verifyToken, taskController.destroy);
  */
 taskRoutes.put("/tasks/:uuid", verifyToken, taskController.edit);
 
+/**
+ * @swagger
+ * /tasks/{uuid}/toggle:
+ *   patch:
+ *     summary: Toggle the completion status of a task by UUID
+ *     tags: [Tasks]
+ *     parameters:
+ *       - in: path
+ *         name: uuid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: UUID of the task to toggle
+ *     responses:
+ *       200:
+ *         description: Task toggled successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Task not found
+ */
+taskRoutes.patch("/tasks/:uuid/toggle", verifyToken, taskController.toggle);
+
 export default taskRoutes;
