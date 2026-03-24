@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { API_URL } from "../../constants/api";
 import type { ProjectDTO } from "../../types/ProjectDTO";
-const API_URL = "http://localhost:3310/api";
 export default function Create() {
   const [project, setProject] = useState<ProjectDTO | null>(null);
   const [isLoading, setLoading] = useState(false);

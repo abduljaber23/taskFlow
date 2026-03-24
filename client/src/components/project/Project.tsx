@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { Link } from "react-router";
+import { API_URL } from "../../constants/api";
 import { useAuth } from "../../contexts/authContext";
 import type { IProject } from "../../types/IProject";
-
-const API_URL = "http://localhost:3310/api";
 
 export default function Project() {
   const { user } = useAuth();

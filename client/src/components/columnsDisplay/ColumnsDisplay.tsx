@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
 import { useParams } from "react-router";
+import { API_URL } from "../../constants/api";
 import type { ITask } from "../../types/ITask";
 import type { IColumn } from "../../types/Icolumn";
-const API_URL = "http://localhost:3310/api";
 export default function ColumnsDisplay() {
   const { uuid } = useParams();
 
@@ -228,7 +228,7 @@ export default function ColumnsDisplay() {
                   <input
                     type="checkbox"
                     className="checkbox checkbox-sm"
-                    onClick={() => isCompleted(task.uuid)}
+                    onChange={() => isCompleted(task.uuid)}
                     checked={task.isCompleted}
                   />
                 </div>

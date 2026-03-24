@@ -1,7 +1,6 @@
 import { type ReactNode, useEffect, useState } from "react";
+import { API_URL } from "../constants/api";
 import { AuthContext, type User } from "./authContext";
-
-const API_URL = "http://localhost:3310/api";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
