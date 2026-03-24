@@ -186,6 +186,28 @@ export default function ColumnsDisplay() {
     }
   };
 
+  const deleteTask = async (uuid: string) => {
+    try {
+      await fetch(`${API_URL}/tasks/${uuid}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const columnUuid = Object.keys(tasks).find((key) =>
+        tasks[key].some((task) => task.uuid === uuid),
+      );
+
+      if (columnUuid) {
+        setTasks((prev) => ({
+          ...prev,
+          [columnUuid]: prev[columnUuid].filter((t) => t.uuid !== uuid),
+        }));
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="flex flex-row gap-5 overflow-x-auto items-start">
       {
@@ -210,27 +232,40 @@ export default function ColumnsDisplay() {
               {tasks[column.uuid]?.map((task: ITask) => (
                 <div
                   key={task.uuid}
-                  className="bg-mist-800 rounded-lg p-3 m-3 shadow-sm hover:shadow-md transition-all duration-200 flex flex-row items-center justify-between"
+                  className="flex items-center justify-between p-3 m-3 rounded-lg bg-mist-800 shadow-sm transition-all duration-200 hover:shadow-md"
                 >
-                  <h3 className="text-[1rem] font-semibold">
+                  <div className="flex items-center gap-2">
                     <span
-                      className={
+                      className={`status ${
                         task.priority === "high"
-                          ? "status status-error"
+                          ? "status-error"
                           : task.priority === "medium"
-                            ? "status status-warning"
-                            : "status status-success"
-                      }
-                      title={task.priority}
+                            ? "status-warning"
+                            : "status-success"
+                      }`}
+                      title={`Priority: ${task.priority}`}
                     />
-                    &nbsp; {task.content}
-                  </h3>
-                  <input
-                    type="checkbox"
-                    className="checkbox checkbox-sm"
-                    onChange={() => isCompleted(task.uuid)}
-                    checked={task.isCompleted}
-                  />
+                    <h3 className="text-sm font-semibold">{task.content}</h3>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      className="checkbox checkbox-sm"
+                      onChange={() => isCompleted(task.uuid)}
+                      checked={task.isCompleted}
+                      aria-label="Mark task as completed"
+                    />
+
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-xs text-error hover:bg-error/10"
+                      onClick={() => deleteTask(task.uuid)}
+                      aria-label="Delete task"
+                    >
+                      <FaTrash size={14} />
+                    </button>
+                  </div>
                 </div>
               ))}
               <form
