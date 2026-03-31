@@ -21,7 +21,7 @@ const read: RequestHandler = async (req, res, next) => {
     const item = await repo.findOneByUUId(itemUUID);
 
     if (item == null) {
-      res.json({ message: "User not found", status: 404 });
+      res.status(404).json({ message: "User not found", status: 404 });
     } else {
       res.json(item);
     }

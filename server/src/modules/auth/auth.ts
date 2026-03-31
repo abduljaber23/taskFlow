@@ -13,14 +13,17 @@ const register: RequestHandler = async (req, res, next) => {
   try {
     if (!username || !email || !password) {
       res.status(400).json({ message: "Tous les champs ne sont pas remplis" });
+      return;
     }
     const emailExists = await userRepository.findOneByEmail(email);
     if (emailExists) {
       res.status(409).json({ message: "Email exist dèjà" });
+      return;
     }
     const usernameExists = await userRepository.findOneByUsername(username);
     if (usernameExists) {
       res.status(409).json({ message: "username exist dèjà" });
+      return;
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser: UserDTO = {
