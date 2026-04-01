@@ -1,6 +1,7 @@
 import type { NextFunction, Response } from "express";
 import type { AuthRequest } from "../../src/middlewares/verifyToken";
 
+import type { IUser } from "../../src/interfaces/IUser";
 import auth from "../../src/modules/auth/auth";
 import userController from "../../src/modules/user/userController";
 import userRepository from "../../src/modules/user/userRepository";
@@ -87,7 +88,7 @@ describe("UserController", () => {
       role: "user",
       createdAt: new Date(),
       updatedAt: new Date(),
-    } as never);
+    } as IUser);
 
     await userController.read(req, res, mockNext);
 
@@ -219,20 +220,10 @@ describe("UserController", () => {
     });
     const res = mockResponse();
 
-    // 🔹 Mock des méthodes du repo
-    mockedRepo.prototype.findOneByUUId.mockResolvedValue({
-      id: 1,
-      uuid: "123",
-      username: "test",
-      email: "test@test.com",
-      role: "user",
-    } as never);
-
     mockedRepo.prototype.update.mockResolvedValue({ affectedRows: 1 } as never);
 
     await userController.edit(req, res, mockNext);
 
-    //  Vérification que update a été appelé avec les bons arguments
     expect(mockedRepo.prototype.update).toHaveBeenCalledWith("123", {
       uuid: "123",
       username: "new",
@@ -246,3 +237,47 @@ describe("UserController", () => {
     });
   });
 });
+
+// Vocabulaire des tests :
+//  - browse : lister tous les éléments
+//  - read : lire un élément
+//  - add : ajouter un élément
+//  - edit : modifier un élément
+//  - delete : supprimer un élément
+
+//  - should return all users : devrait retourner tous les utilisateurs
+//  - should return user by uuid : devrait retourner un utilisateur par son uuid
+//  - should return 404 if user not found : devrait retourner 404 si l'utilisateur n'est pas trouvé
+//  - should create user : devrait créer un utilisateur
+//  - should delete user : devrait supprimer un utilisateur
+//  - should return 403 if user tries to edit another user : devrait retourner 403 si l'utilisateur essaie de modifier un autre utilisateur
+//  - should update user : devrait mettre à jour un utilisateur
+
+//  - affectedRows : nombre de lignes affectées par une requête SQL
+//  - insertId : id de l'élément créé par une requête SQL
+//  - rows : tableau de lignes renvoyées par une requête SQL
+//  - ...data : opérateur de décomposition pour fusionner des objets
+
+//  - findOneByUUId : trouver un utilisateur par son uuid
+//  - findAll : trouver tous les utilisateurs
+//  - create : créer un utilisateur
+//  - update : mettre à jour un utilisateur
+//  - delete : supprimer un utilisateur
+
+//  - mockResolvedValue : simuler la valeur de retour d'une fonction asynchrone
+//  - toHaveBeenCalledWith : vérifier qu'une fonction a été appelée avec des arguments spécifiques
+//  - toHaveBeenCalled : vérifier qu'une fonction a été appelée
+//  - toHaveBeenCalledWith : vérifier qu'une fonction a été appelée avec des arguments spécifiques
+//  - toHaveBeenCalledWith : vérifier qu'une fonction a été appelée avec des arguments spécifiques
+//  - toHaveBeenCalledWith : vérifier qu'une fonction a été appelée avec des arguments spécifiques
+
+//  - mockRequest : simuler une requête HTTP
+//  - mockResponse : simuler une réponse HTTP
+//  - mockNext : simuler la fonction next() d'Express
+
+//  - beforeEach : exécuter une fonction avant chaque test
+//  - jest.clearAllMocks : réinitialiser tous les mocks
+
+//  - describe : regrouper des tests
+//  - it : définir un test
+//  - expect : faire des assertions

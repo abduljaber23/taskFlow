@@ -1,10 +1,10 @@
 import type { NextFunction, Response } from "express";
-import type { AuthRequest } from "../../../src/middlewares/verifyToken";
+import type { AuthRequest } from "../../src/middlewares/verifyToken";
 
-import projectController from "../../../src/modules/project/projectController";
-import projectRepository from "../../../src/modules/project/projectRepository";
+import projectController from "../../src/modules/project/projectController";
+import projectRepository from "../../src/modules/project/projectRepository";
 
-jest.mock("../../../src/modules/project/projectRepository");
+jest.mock("../../src/modules/project/projectRepository");
 
 // mock de la classe
 const mockedRepo = projectRepository as jest.MockedClass<
