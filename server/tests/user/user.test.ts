@@ -1,129 +1,248 @@
-import jwt from "jsonwebtoken";
-import supertest from "supertest";
-import databaseClient from "../../database/client";
-import type { Result, Rows } from "../../database/client";
-import app from "../../src/app";
+import type { NextFunction, Response } from "express";
+import type { AuthRequest } from "../../src/middlewares/verifyToken";
 
-afterEach(() => {
-  jest.restoreAllMocks();
-});
+import auth from "../../src/modules/auth/auth";
+import userController from "../../src/modules/user/userController";
+import userRepository from "../../src/modules/user/userRepository";
 
-describe("GET /api/users", () => {
-  it("should fetch users successfully", async () => {
-    process.env.JWT_SECRET = "testsecret";
+jest.mock("../../src/modules/user/userRepository");
 
-    const rows = [] as Rows;
+// mock de la classe
+const mockedRepo = userRepository as jest.MockedClass<typeof userRepository>;
 
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [rows, []]);
+const mockRequest = (data: Partial<AuthRequest> = {}): AuthRequest =>
+  ({
+    body: {},
+    params: {},
+    user: undefined,
+    ...data,
+  }) as AuthRequest;
 
-    const token = jwt.sign(
+const mockResponse = (): jest.Mocked<Response> => {
+  const res = {} as jest.Mocked<Response>;
+
+  res.status = jest.fn().mockReturnValue(res);
+  res.json = jest.fn().mockReturnValue(res);
+
+  return res;
+};
+
+const mockNext: jest.MockedFunction<NextFunction> = jest.fn();
+
+describe("UserController", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  //  browse
+  it("should return all users", async () => {
+    const req = mockRequest();
+    const res = mockResponse();
+
+    mockedRepo.prototype.findAll.mockResolvedValue([
       {
-        userUuid: "test-uuid",
-        email: "test@test.com",
+        id: 1,
+        uuid: "123",
         username: "test",
-        role: "user",
-      },
-      process.env.JWT_SECRET,
-    );
-
-    const response = await supertest(app)
-      .get("/api/users")
-      .set("Authorization", `Bearer ${token}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body).toStrictEqual(rows);
-  });
-});
-
-describe("GET /api/users/:uuid", () => {
-  beforeAll(() => {
-    process.env.JWT_SECRET = "testsecret";
-  });
-
-  it("should fetch a single user successfully", async () => {
-    const rows = [{}] as Rows;
-
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [rows, []]);
-
-    const token = jwt.sign(
-      {
-        userUuid: "test-uuid",
         email: "test@test.com",
-        username: "test",
+        password: "test",
         role: "user",
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
-      process.env.JWT_SECRET as string,
+    ]);
+
+    await userController.browse(req, res, mockNext);
+
+    expect(mockedRepo.prototype.findAll).toHaveBeenCalled();
+    expect(res.json).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: 1,
+          uuid: "123",
+          username: "test",
+          email: "test@test.com",
+          role: "user",
+          password: "test",
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+        }),
+      ]),
     );
-
-    const response = await supertest(app)
-      .get("/api/users/9db693d9-0051-48bf-98be-3a876874c167")
-      .set("Authorization", `Bearer ${token}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body).toStrictEqual(rows[0]);
   });
 
-  it("should fail on invalid id", async () => {
-    const rows = [] as Rows;
+  //  read
+  it("should return user by uuid", async () => {
+    const req = mockRequest({
+      params: { uuid: "123" },
+    });
+    const res = mockResponse();
 
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [rows, []]);
+    mockedRepo.prototype.findOneByUUId.mockResolvedValue({
+      id: 1,
+      uuid: "123",
+      username: "test",
+      email: "test@test.com",
+      password: "test",
+      role: "user",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as never);
 
-    const token = jwt.sign(
-      {
-        userUuid: "test-uuid",
-        email: "test@test.com",
-        username: "test",
-        role: "user",
-      },
-      process.env.JWT_SECRET as string,
-    );
+    await userController.read(req, res, mockNext);
 
-    const response = await supertest(app)
-      .get("/api/users/invalid-uuid")
-      .set("Authorization", `Bearer ${token}`);
-
-    expect(response.status).toBe(404);
-    expect(response.body).toEqual({ message: "User not found", status: 404 });
-  });
-});
-
-describe("POST /api/users", () => {
-  it("should add a new user successfully", async () => {
-    const result = { insertId: 1 } as Result;
-
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [result, []]);
-
-    const fakeItem = { email: "foo", username: "foo", password: "foo" };
-
-    const response = await supertest(app)
-      .post("/api/auth/register")
-      .send(fakeItem);
-
-    expect(response.status).toBe(201);
-    expect(response.body).toEqual({
-      message: "Utilisateur crear avec succés!",
-      userId: result.insertId,
+    expect(mockedRepo.prototype.findOneByUUId).toHaveBeenCalledWith("123");
+    expect(res.json).toHaveBeenCalledWith({
+      id: 1,
+      uuid: "123",
+      username: "test",
+      email: "test@test.com",
+      role: "user",
+      password: "test",
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
     });
   });
 
-  it("should fail on invalid request body", async () => {
-    const fakeUser = { username: "foo", password: "foo" };
+  it("should return 404 if user not found", async () => {
+    const req = mockRequest({
+      user: {
+        userUuid: "123",
+        username: "test",
+        email: "test@test.com",
+        role: "user",
+      },
+      params: { uuid: "abc" },
+    });
+    const res = mockResponse();
 
-    const response = await supertest(app)
-      .post("/api/auth/register")
-      .send(fakeUser);
+    mockedRepo.prototype.findOneByUUId.mockResolvedValue(null as never);
 
-    expect(response.status).toBe(400);
-    expect(response.body).toEqual({
-      message: "Tous les champs ne sont pas remplis",
+    await userController.read(req, res, mockNext);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  // register
+  it("should return 400 if missing fields", async () => {
+    const req = mockRequest({
+      body: {},
+    });
+    const res = mockResponse();
+
+    await auth.register(req, res, mockNext);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it("should create user", async () => {
+    const req = mockRequest({
+      body: {
+        username: "test",
+        email: "test@test.com",
+        password: "test",
+      },
+    });
+    const res = mockResponse();
+
+    mockedRepo.prototype.create.mockResolvedValue({
+      id: 1,
+      uuid: "123",
+      ...req.body,
+    } as never);
+
+    await auth.register(req, res, mockNext);
+    expect(mockedRepo.prototype.create).toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(201);
+  });
+
+  // delete
+  it("should delete user", async () => {
+    const req = mockRequest({
+      user: {
+        userUuid: "123",
+        username: "test",
+        email: "test@test.com",
+        role: "user",
+      },
+      params: { uuid: "123" },
+    });
+
+    const res = mockResponse();
+
+    mockedRepo.prototype.findOneByUUId.mockResolvedValue({
+      id: 1,
+      uuid: "123",
+      username: "test",
+      email: "test@test.com",
+      role: "user",
+    } as never);
+
+    mockedRepo.prototype.delete.mockResolvedValue({ affectedRows: 1 } as never);
+
+    await userController.destroy(req, res, mockNext);
+
+    expect(mockedRepo.prototype.delete).toHaveBeenCalledWith("123");
+    expect(res.status).toHaveBeenCalledWith(204);
+  });
+
+  // edit user
+  it("should return 403 if user tries to edit another user", async () => {
+    const req = mockRequest({
+      user: {
+        userUuid: "123",
+        username: "test",
+        email: "test@test.com",
+        role: "user",
+      },
+      params: { uuid: "abc" },
+    });
+    const res = mockResponse();
+
+    mockedRepo.prototype.update.mockResolvedValue({ affectedRows: 1 } as never);
+
+    await userController.edit(req, res, mockNext);
+
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+
+  it("should update user", async () => {
+    //  Préparer la requête et la réponse
+    const req = mockRequest({
+      user: {
+        userUuid: "123",
+        username: "test",
+        email: "test@test.com",
+        role: "user",
+      },
+      params: { uuid: "123" },
+      body: { username: "new" }, // on ne change que le username
+    });
+    const res = mockResponse();
+
+    // 🔹 Mock des méthodes du repo
+    mockedRepo.prototype.findOneByUUId.mockResolvedValue({
+      id: 1,
+      uuid: "123",
+      username: "test",
+      email: "test@test.com",
+      role: "user",
+    } as never);
+
+    mockedRepo.prototype.update.mockResolvedValue({ affectedRows: 1 } as never);
+
+    await userController.edit(req, res, mockNext);
+
+    //  Vérification que update a été appelé avec les bons arguments
+    expect(mockedRepo.prototype.update).toHaveBeenCalledWith("123", {
+      uuid: "123",
+      username: "new",
+      email: undefined,
+      password: undefined,
+    });
+
+    //  Vérification de la réponse
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Utilisateur mis à jour avec succés",
     });
   });
 });
