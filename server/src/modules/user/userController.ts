@@ -37,9 +37,10 @@ const destroy: RequestHandler = async (req, res, next) => {
 
     if (result.affectedRows === 0) {
       res.status(404).json({ message: "Utilisateur non trouvé" });
+      return;
     }
 
-    res.json({ message: "Utilisateur supprimé avec succès" });
+    res.json({ message: "Utilisateur supprimé avec succès" }).status(204);
   } catch (err) {
     next(err);
   }

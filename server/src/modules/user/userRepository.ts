@@ -1,4 +1,4 @@
-import type { ResultSetHeader } from "mysql2";
+import type { ResultSetHeader, RowDataPacket } from "mysql2";
 import client from "../../../database/client";
 import type { UserDTO } from "../../dto/UserDTO";
 import type { IUser } from "../../interfaces/IUser";
@@ -8,8 +8,8 @@ const selectSql =
 export default class UserRepository {
   async findAll() {
     try {
-      const [rows] = await client.query<IUser[]>(`${selectSql}`);
-      return rows;
+      const [rows] = await client.query<RowDataPacket[]>(`${selectSql}`);
+      return rows as IUser[];
     } catch (error) {
       throw new Error(
         `Erreur lors de la récupération des utilisateurs: ${error}`,
@@ -19,10 +19,11 @@ export default class UserRepository {
 
   async findOneById(id: number) {
     try {
-      const [rows] = await client.query<IUser[]>(`${selectSql} WHERE id = ? `, [
-        id,
-      ]);
-      return rows[0];
+      const [rows] = await client.query<RowDataPacket[]>(
+        `${selectSql} WHERE id = ? `,
+        [id],
+      );
+      return rows[0] as IUser;
     } catch (error) {
       throw new Error(
         `Erreur lors de la récupération de l'utilisateur: ${error}`,
@@ -32,11 +33,11 @@ export default class UserRepository {
 
   async findOneByUUId(uuid: string) {
     try {
-      const [rows] = await client.query<IUser[]>(
+      const [rows] = await client.query<RowDataPacket[]>(
         `${selectSql} WHERE uuid = ? `,
         [uuid],
       );
-      return rows[0];
+      return rows[0] as IUser;
     } catch (error) {
       throw new Error(
         `Erreur lors de la récupération de l'utilisateur: ${error}`,
@@ -46,11 +47,11 @@ export default class UserRepository {
 
   async findOneByEmail(email: string) {
     try {
-      const [rows] = await client.query<IUser[]>(
+      const [rows] = await client.query<RowDataPacket[]>(
         "SELECT * FROM users WHERE email = ?",
         [email],
       );
-      return rows[0];
+      return rows[0] as IUser;
     } catch (error) {
       throw new Error(
         `Erreur lors de la récupération de l'utilisateur: ${error}`,
@@ -59,11 +60,11 @@ export default class UserRepository {
   }
   async findOneByUsername(username: string) {
     try {
-      const [rows] = await client.query<IUser[]>(
+      const [rows] = await client.query<RowDataPacket[]>(
         "SELECT * FROM users WHERE username = ?",
         [username],
       );
-      return rows[0];
+      return rows[0] as IUser;
     } catch (error) {
       throw new Error(
         `Erreur lors de la récupération de l'utilisateur: ${error}`,

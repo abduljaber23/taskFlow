@@ -1,6 +1,4 @@
-import type { RowDataPacket } from "mysql2";
-
-export interface IProject extends RowDataPacket {
+export interface IProject {
   id: number;
   name: string;
   description: string;

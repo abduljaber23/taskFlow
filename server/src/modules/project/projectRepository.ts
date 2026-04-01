@@ -1,4 +1,4 @@
-import type { ResultSetHeader } from "mysql2";
+import type { ResultSetHeader, RowDataPacket } from "mysql2";
 import client from "../../../database/client";
 import type { ProjectDTO } from "../../dto/ProjectDTO";
 import type { IProject } from "../../interfaces/IProject";
@@ -8,8 +8,8 @@ const selectSql =
 export default class projectRepository {
   async findAll() {
     try {
-      const [rows] = await client.query<IProject[]>(`${selectSql}`);
-      return rows;
+      const [rows] = await client.query<RowDataPacket[]>(`${selectSql}`);
+      return rows as IProject[];
     } catch (error) {
       throw new Error(`Erreur lors de la récupération des projets: ${error}`);
     }
@@ -17,11 +17,11 @@ export default class projectRepository {
 
   async findAllProjectsByUserUuid(userUuid: string) {
     try {
-      const [rows] = await client.query<IProject[]>(
+      const [rows] = await client.query<RowDataPacket[]>(
         `${selectSql} WHERE createdBy = ? ORDER BY createdAt DESC`,
         [userUuid],
       );
-      return rows;
+      return rows as IProject[];
     } catch (error) {
       throw new Error(`Erreur lors de la récupération des projets: ${error}`);
     }
@@ -29,11 +29,11 @@ export default class projectRepository {
 
   async findOneById(id: number) {
     try {
-      const [rows] = await client.query<IProject[]>(
+      const [rows] = await client.query<RowDataPacket[]>(
         `${selectSql} WHERE id = ? `,
         [id],
       );
-      return rows[0];
+      return rows[0] as IProject;
     } catch (error) {
       throw new Error(`Erreur lors de la récupération du projet: ${error}`);
     }
@@ -41,11 +41,11 @@ export default class projectRepository {
 
   async findOneByUUId(uuid: string) {
     try {
-      const [rows] = await client.query<IProject[]>(
+      const [rows] = await client.query<RowDataPacket[]>(
         `${selectSql} WHERE uuid = ? `,
         [uuid],
       );
-      return rows[0];
+      return rows[0] as IProject;
     } catch (error) {
       throw new Error(`Erreur lors de la récupération du projet: ${error}`);
     }
