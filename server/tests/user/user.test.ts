@@ -267,9 +267,6 @@ describe("UserController", () => {
 //  - mockResolvedValue : simuler la valeur de retour d'une fonction asynchrone
 //  - toHaveBeenCalledWith : vérifier qu'une fonction a été appelée avec des arguments spécifiques
 //  - toHaveBeenCalled : vérifier qu'une fonction a été appelée
-//  - toHaveBeenCalledWith : vérifier qu'une fonction a été appelée avec des arguments spécifiques
-//  - toHaveBeenCalledWith : vérifier qu'une fonction a été appelée avec des arguments spécifiques
-//  - toHaveBeenCalledWith : vérifier qu'une fonction a été appelée avec des arguments spécifiques
 
 //  - mockRequest : simuler une requête HTTP
 //  - mockResponse : simuler une réponse HTTP
