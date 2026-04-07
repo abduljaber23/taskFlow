@@ -68,6 +68,7 @@ export default function Create() {
           <input
             id="name"
             name="name"
+            data-cy="project-name"
             value={formData.name}
             onChange={handleChange}
             type="text"
@@ -82,6 +83,7 @@ export default function Create() {
           <input
             id="description"
             name="description"
+            data-cy="project-description"
             value={formData.description}
             onChange={handleChange}
             type="text"
@@ -95,6 +97,7 @@ export default function Create() {
           <select
             id="status"
             name="status"
+            data-cy="project-status"
             value={formData.status}
             onChange={handleChange}
             className="select select-bordered"
@@ -106,6 +109,7 @@ export default function Create() {
 
           <button
             type="submit"
+            data-cy="project-save"
             className="btn btn-neutral mt-4"
             disabled={isLoading}
           >

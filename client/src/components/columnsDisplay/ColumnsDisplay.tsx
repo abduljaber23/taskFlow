@@ -225,6 +225,7 @@ export default function ColumnsDisplay() {
                   type="button"
                   className="btn btn-ghost btn-xs text-error hover:bg-error/10"
                   onClick={() => deleteColumn(column.uuid)}
+                  data-cy="delete-column-btn"
                 >
                   <FaTrash size={14} />
                 </button>
@@ -254,6 +255,7 @@ export default function ColumnsDisplay() {
                       className="checkbox checkbox-sm"
                       onChange={() => isCompleted(task.uuid)}
                       checked={task.isCompleted}
+                      data-cy="task-checkbox"
                       aria-label="Mark task as completed"
                     />
 
@@ -261,6 +263,7 @@ export default function ColumnsDisplay() {
                       type="button"
                       className="btn btn-ghost btn-xs text-error hover:bg-error/10"
                       onClick={() => deleteTask(task.uuid)}
+                      data-cy="task-delete"
                       aria-label="Delete task"
                     >
                       <FaTrash size={14} />
@@ -275,6 +278,7 @@ export default function ColumnsDisplay() {
               >
                 <input
                   name="content"
+                  data-cy="task-name"
                   value={taskFormData.content}
                   onChange={handleTaskChange}
                   type="text"
@@ -284,6 +288,7 @@ export default function ColumnsDisplay() {
 
                 <select
                   name="priority"
+                  data-cy="task-priority"
                   value={taskFormData.priority}
                   onChange={handleTaskChange}
                   className="select select-sm w-full focus:outline-none"
@@ -295,6 +300,7 @@ export default function ColumnsDisplay() {
 
                 <button
                   type="submit"
+                  data-cy="task-save"
                   className="btn btn-sm btn-primary w-full flex items-center justify-center gap-1"
                 >
                   <IoMdAdd size={18} />
@@ -306,6 +312,7 @@ export default function ColumnsDisplay() {
                 className="btn btn-soft btn-lg bg-mist-950 border-none w-full sticky bottom-0 text-sm py-5  hover:bg-mist-800
              focus:outline-none focus:ring-0 active:translate-x-0 active:translate-y-0 active:scale-100"
                 onClick={showInput}
+                data-cy="add-task-btn"
               >
                 + Ajouter une tâche
               </button>
@@ -322,11 +329,13 @@ export default function ColumnsDisplay() {
             onChange={handleChange}
             placeholder="Ajouter une liste..."
             className="input w-full mb-3 focus:outline-none"
+            data-cy="column-name"
           />
           <button
             type="submit"
             className="btn btn-soft btn-lg bg-mist-950 border-none w-full sticky bottom-0 text-sm py-5  hover:bg-mist-800
              focus:outline-none focus:ring-0 active:translate-x-0 active:translate-y-0 active:scale-100"
+            data-cy="column-save"
           >
             + Ajouter une liste
           </button>

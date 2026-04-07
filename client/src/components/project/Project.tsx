@@ -44,6 +44,7 @@ export default function Project() {
         <div className="flex justify-center md:justify-between items-center mb-8">
           <Link
             to="/projects/create"
+            data-cy="create-project-btn"
             className="btn btn-success text-white btn-sm md:btn-md"
           >
             + Créer un projet
@@ -76,6 +77,7 @@ export default function Project() {
 
                       <button
                         type="button"
+                        data-cy="delete-project-btn"
                         className="btn btn-ghost btn-xs text-error hover:bg-error/10"
                         onClick={() => deleteProject(project.uuid)}
                       >
@@ -101,6 +103,7 @@ export default function Project() {
                     <Link
                       to={`/projects/${project.uuid}`}
                       className="btn btn-soft btn-sm text-sm"
+                      data-cy="view-project-btn"
                     >
                       Voir le projet
                     </Link>

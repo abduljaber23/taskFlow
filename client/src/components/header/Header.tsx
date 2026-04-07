@@ -37,6 +37,7 @@ export default function Header() {
               tabIndex={0}
               className="btn btn-ghost btn-circle avatar"
               type="button"
+              data-cy="user-avatar-btn"
             >
               <div className="w-10 rounded-full">
                 <img
@@ -60,6 +61,7 @@ export default function Header() {
                   type="button"
                   onClick={handleLogout}
                   className="text-red-500 text-left"
+                  data-cy="logout-btn"
                 >
                   Déconnexion
                 </button>
