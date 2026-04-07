@@ -17,9 +17,11 @@
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "cypress": "^15.13.0",
     "typescript": "^5.8.2",
     "vite": "^6.2.4"
   }
