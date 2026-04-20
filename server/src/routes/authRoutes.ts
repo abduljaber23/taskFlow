@@ -1,4 +1,5 @@
 import express from "express";
+import { verifyCaptcha } from "../middlewares/captcha";
 import { verifyToken } from "../middlewares/verifyToken";
 import auth from "../modules/auth/auth";
 
@@ -29,7 +30,7 @@ const authRoutes = express.Router();
  *       400:
  *         description: Bad request
  */
-authRoutes.post("/auth/register", auth.register);
+authRoutes.post("/auth/register", verifyCaptcha, auth.register);
 
 /**
  * @swagger
@@ -54,7 +55,7 @@ authRoutes.post("/auth/register", auth.register);
  *       400:
  *         description: Bad request
  */
-authRoutes.post("/auth/login", auth.login);
+authRoutes.post("/auth/login", verifyCaptcha, auth.login);
 
 /**
  * @swagger

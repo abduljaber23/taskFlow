@@ -11,11 +11,16 @@ export interface User {
 export interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (
+    email: string,
+    password: string,
+    recaptchaToken: string,
+  ) => Promise<void>;
   register: (
     email: string,
     username: string,
     password: string,
+    recaptchaToken: string,
   ) => Promise<void>;
   logout: () => Promise<void>;
 }

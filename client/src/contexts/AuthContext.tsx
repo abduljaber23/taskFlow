@@ -35,12 +35,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (
+    email: string,
+    password: string,
+    recaptchaToken: string,
+  ) => {
     const res = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, recaptchaToken }),
     });
 
     const data = await res.json();
@@ -56,12 +60,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     email: string,
     username: string,
     password: string,
+    recaptchaToken: string,
   ) => {
     const res = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ email, username, password }),
+      body: JSON.stringify({ email, username, password, recaptchaToken }),
     });
 
     const data = await res.json();
