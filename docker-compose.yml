@@ -16,9 +16,9 @@ services:
       DB_PORT: 3306
       DB_USER: user
       DB_PASSWORD: password
-      DB_NAME: js_template_fullstack
+      DB_NAME: task_flow
       VITE_API_URL: "http://localhost:3310"
-    command: sh -c "npm run dev"
+    command: sh -c "npm run db:migrate && npm run dev"
     depends_on:
       database:
         condition: service_healthy
@@ -38,8 +38,17 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
       # Password for root access
+      MYSQL_DATABASE: task_flow
       MYSQL_ROOT_PASSWORD: rootpassword
     ports:
       - target: 3306
         published: 3306
         protocol: tcp
+  
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
