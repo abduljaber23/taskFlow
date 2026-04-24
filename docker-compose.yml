@@ -1,54 +1,56 @@
-version: "3.4"
-
 services:
-  web:
-    build: .
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
     ports:
-      - "3310:3310"
-      - "3000:3000"
+      - 3000:3000
+    volumes:
+      - ./client:/client
+      - /client/node_modules
     environment:
-      APP_PORT: 3310
-      APP_SECRET: 123456789
-      DB_HOST: database
-      DB_PORT: 3306
-      DB_USER: user
-      DB_PASSWORD: password
-      DB_NAME: task_flow
-      VITE_API_URL: "http://localhost:3310"
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3310:3310
+    volumes:
+      - ./server:/server
+      - /server/node_modules
+    env_file:
+      - ./server/.env
     command: sh -c "npm run db:migrate && npm run dev"
     depends_on:
       database:
         condition: service_healthy
-
   database:
     image: mysql/mysql-server:8.0
-    healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uuser", "-ppassword" ] # Command to check health.
-      interval: 5s # Interval between health checks.
-      timeout: 5s # Timeout for each health checking.
-      retries: 20 # Hou many times retries.
-      start_period: 10s
-    volumes:
-      - ./database-setup.sh:/docker-entrypoint-initdb.d/setup.sh
-    #      - db-data:/var/lib/mysql
-    environment:
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      # Password for root access
-      MYSQL_DATABASE: task_flow
-      MYSQL_ROOT_PASSWORD: rootpassword
     ports:
-      - target: 3306
-        published: 3306
-        protocol: tcp
+      - 3306:3306
+    env_file:
+      - ./server/.env
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uuser", "-ppassword" ]
+      interval: 5s 
+      timeout: 5s 
+      retries: 20 
+      start_period: 10s
+
   
   adminer:
     image: adminer
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       database:
         condition: service_healthy
+
+volumes:
+  db-data:
