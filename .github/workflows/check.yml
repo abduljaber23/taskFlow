@@ -19,6 +19,7 @@ on:
     branches:
       - main
       - develop
+  workflow_dispatch:   # ← Permet de lancer manuellement depuis GitHub
 
 jobs:
 
