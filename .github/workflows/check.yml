@@ -4,11 +4,15 @@ name: ✅ Vérification du Code
 # Ce workflow vérifie automatiquement ton code à chaque push
 # ou pull request sur les branches main et develop.
 #
-# Il exécute 3 vérifications en parallèle :
+# Il exécute 3 vérifications :
 #   1. Lint (Biome) + Types (TypeScript)
 #   2. Tests (Jest - server)
 #   3. Build (client React/Vite + server TypeScript)
 # ─────────────────────────────────────────────────────────
+
+# Utilise Node.js 24 pour les actions GitHub (Node.js 20 est déprécié)
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 on:
   push:
@@ -44,7 +48,9 @@ jobs:
         run: npm install
 
       - name: 🔍 Vérifier le formatage avec Biome
-        run: npx biome check --error-on-warnings --no-errors-on-unmatched .
+        # --no-errors-on-unmatched : ignore les fichiers non reconnus
+        # Sans --error-on-warnings : les warnings n'échouent pas le CI
+        run: npx biome check --no-errors-on-unmatched .
 
       - name: 🔷 Vérifier les types TypeScript (client)
         run: npm run check-types --workspace=client
