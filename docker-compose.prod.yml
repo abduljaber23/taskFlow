@@ -1,31 +1,40 @@
-version: "3.4"
-
 services:
-  web:
-    build: .
-    container_name: ${PROJECT_NAME:-project}-web
-    env_file:
-      - ../envs/.env-${GITHUB_REPOSITORY_NAME}
-    command: sh -c "npm run build && npm run start"
-    environment:
-      APP_PORT: 3310
-      APP_SECRET: ${APP_SECRET:-123456789}
-      DB_HOST: ${DATABASE_SUBDOMAIN_NAME}-db
-      DB_PORT: 3306
-      DB_USER: ${USER_NAME}
-      DB_PASSWORD: ${USER_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      VITE_API_URL: ""
-      PROJECT_NAME_SPECIFIC_SAMPLE: ${PROJECT_NAME_SPECIFIC_SAMPLE}
-    networks:
-      - proxy
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=proxy"
-      - "traefik.http.routers.${PROJECT_NAME:-project}-secure.entrypoints=websecure"
-      - "traefik.http.routers.${PROJECT_NAME:-project}-secure.rule=Host(`${PROJECT_NAME:-project}.${HOST:-localhost}`)"
-      - "traefik.http.services.${PROJECT_NAME:-project}.loadbalancer.server.port=3310"
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.prod
+    ports:
+      - 80:80
+    depends_on:
+      - server
 
-networks:
-  proxy:
-    external: true
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.prod
+    ports:
+      - 3310:3310
+    env_file:
+      - ./server/.env
+    command: sh -c "node dist/main.js"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: mysql/mysql-server:8.0
+    ports:
+      - 3306:3306
+    env_file:
+      - ./server/.env
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uuser", "-ppassword" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+volumes:
+  db-data:

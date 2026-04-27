@@ -11,7 +11,7 @@ const projectRepo = new projectRepository();
 
 const browseAllByProjectUuid: RequestHandler = async (req, res, next) => {
   try {
-    const { projectUuid } = req.params;
+    const { projectUuid } = req.params as { projectUuid: string };
     if (!projectUuid) {
       res.status(400).json({ message: "Project UUID is required" });
       return;
@@ -30,7 +30,7 @@ const browseAllByProjectUuid: RequestHandler = async (req, res, next) => {
 
 const read: RequestHandler = async (req, res, next) => {
   try {
-    const itemUUID = req.params.uuid;
+    const itemUUID = req.params.uuid as string;
     const item = await columnRepository.findOneByUUId(itemUUID);
 
     if (item == null) {
@@ -72,7 +72,7 @@ const add: RequestHandler = async (req: AuthRequest, res, next) => {
 
 const edit: RequestHandler = async (req: AuthRequest, res, next) => {
   const { name } = req.body;
-  const columnUUID = req.params.uuid;
+  const columnUUID = req.params.uuid as string;
   try {
     const column = await columnRepository.findOneByUUId(columnUUID);
     const user = req.user;
@@ -100,7 +100,7 @@ const edit: RequestHandler = async (req: AuthRequest, res, next) => {
 };
 
 const destroy: RequestHandler = async (req: AuthRequest, res, next) => {
-  const columnUUID = req.params.uuid;
+  const columnUUID = req.params.uuid as string;
   try {
     const user = req.user;
     if (!user) {

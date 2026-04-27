@@ -33,7 +33,7 @@ const browseByUser: RequestHandler = async (req: AuthRequest, res, next) => {
 const read: RequestHandler = async (req: AuthRequest, res, next) => {
   try {
     const user = req.user;
-    const projectUUID = req.params.uuid;
+    const projectUUID = req.params.uuid as string;
 
     if (!user) {
       res.status(401).json({ message: "Unauthorized" });
@@ -60,7 +60,7 @@ const read: RequestHandler = async (req: AuthRequest, res, next) => {
 
 const destroy: RequestHandler = async (req: AuthRequest, res, next) => {
   try {
-    const projectUUID = req.params.uuid;
+    const projectUUID = req.params.uuid as string;
     const project = await projectRepository.findOneByUUId(projectUUID);
     if (!project || project.createdBy !== req.user?.userUuid) {
       res.status(403).json({ message: "Accès interdit" });
@@ -114,7 +114,7 @@ const add: RequestHandler = async (req: AuthRequest, res, next) => {
 
 const edit: RequestHandler = async (req: AuthRequest, res, next) => {
   const { name, description, status } = req.body;
-  const projectUUID = req.params.uuid;
+  const projectUUID = req.params.uuid as string;
   try {
     const project = await projectRepository.findOneByUUId(projectUUID);
     const user = req.user;

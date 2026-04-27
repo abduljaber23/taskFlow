@@ -14,7 +14,7 @@ const columnRepository = new ColumnRepository();
 
 const browseAllByColumnUuid: RequestHandler = async (req, res, next) => {
   try {
-    const { columnUuid } = req.params;
+    const { columnUuid } = req.params as { columnUuid: string };
     if (!columnUuid) {
       res.status(400).json({ message: "Column UUID is required" });
       return;
@@ -33,7 +33,7 @@ const browseAllByColumnUuid: RequestHandler = async (req, res, next) => {
 
 const read: RequestHandler = async (req, res, next) => {
   try {
-    const itemUUID = req.params.uuid;
+    const itemUUID = req.params.uuid as string;
     const item = await taskRepository.findOneByUUId(itemUUID);
 
     if (item == null) {
@@ -89,7 +89,7 @@ const add: RequestHandler = async (req: AuthRequest, res, next) => {
 };
 
 const destroy: RequestHandler = async (req: AuthRequest, res, next) => {
-  const taskUUID = req.params.uuid;
+  const taskUUID = req.params.uuid as string;
   try {
     const user = req.user;
     if (!user) {
@@ -111,7 +111,7 @@ const destroy: RequestHandler = async (req: AuthRequest, res, next) => {
 };
 
 const edit: RequestHandler = async (req: AuthRequest, res, next) => {
-  const taskUUID = req.params.uuid;
+  const taskUUID = req.params.uuid as string;
   const { content, priority, position, isCompleted, columnUuid } = req.body;
   try {
     const user = req.user;
@@ -148,7 +148,7 @@ const edit: RequestHandler = async (req: AuthRequest, res, next) => {
 };
 
 const toggle: RequestHandler = async (req: AuthRequest, res, next) => {
-  const taskUUID = req.params.uuid;
+  const taskUUID = req.params.uuid as string;
   try {
     const user = req.user;
     if (!user) {

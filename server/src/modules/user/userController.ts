@@ -17,7 +17,7 @@ const browse: RequestHandler = async (req, res, next) => {
 
 const read: RequestHandler = async (req, res, next) => {
   try {
-    const itemUUID = req.params.uuid;
+    const itemUUID = req.params.uuid as string;
     const item = await repo.findOneByUUId(itemUUID);
 
     if (item == null) {
@@ -32,7 +32,7 @@ const read: RequestHandler = async (req, res, next) => {
 
 const destroy: RequestHandler = async (req, res, next) => {
   try {
-    const itemUUID = req.params.uuid;
+    const itemUUID = req.params.uuid as string;
     const result = await repo.delete(itemUUID);
 
     if (result.affectedRows === 0) {
@@ -48,9 +48,9 @@ const destroy: RequestHandler = async (req, res, next) => {
 
 const edit: RequestHandler = async (req: AuthRequest, res, next) => {
   const { email, username, password } = req.body;
-  const itemUUID = req.params.uuid;
+  const itemUUID = req.params.uuid as string;
   try {
-    if (req.user?.userUuid !== req.params.uuid) {
+    if (req.user?.userUuid !== (req.params.uuid as string)) {
       res.status(403).json({ message: "Accès interdit" });
       return;
     }
