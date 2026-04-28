@@ -1,5 +1,4 @@
 import type { NextFunction, Request, Response } from "express";
-import fetch from "node-fetch";
 
 interface RecaptchaV3Response {
   success: boolean;

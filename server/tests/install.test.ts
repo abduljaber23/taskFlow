@@ -12,6 +12,11 @@ afterAll((done) => {
   databaseClient.end().then(done);
 });
 
+beforeAll(() => {
+  jest.spyOn(databaseClient, "getConnection").mockResolvedValue({} as any);
+  jest.spyOn(databaseClient, "query").mockResolvedValue([[] as any, [] as any]);
+});
+
 // Test suite for environment installation
 describe("Installation", () => {
   // Test: Check if the .env file exists
