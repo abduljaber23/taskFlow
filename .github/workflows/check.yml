@@ -40,4 +40,4 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build Docker images
-        run: docker-compose -f docker-compose.prod.yml build
+        run: docker compose -f docker-compose.prod.yml build
