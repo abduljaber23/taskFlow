@@ -10,5 +10,5 @@ WORKDIR /server
 COPY package*.json ./
 RUN npm install --omit=dev
 COPY --from=build-stage /server/dist ./dist
-EXPOSE 3000
+COPY database ./database
 CMD ["node", "dist/src/main.js"]

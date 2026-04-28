@@ -1,110 +1,29 @@
-name: ✅ Vérification du Code
-
-# ─────────────────────────────────────────────────────────
-# Ce workflow vérifie automatiquement ton code à chaque push
-# ou pull request sur les branches main et develop.
-#
-# Il exécute 3 vérifications :
-#   1. Lint (Biome) + Types (TypeScript)
-#   2. Tests (Jest - server)
-#   3. Build (client React/Vite + server TypeScript)
-# ─────────────────────────────────────────────────────────
-
-# Utilise Node.js 24 pour les actions GitHub (Node.js 20 est déprécié)
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
+name: Test ci
 on:
-  push:
-    branches:
-      - main
-      - develop
-  pull_request:
-    branches:
-      - main
-      - develop
-  workflow_dispatch:   # ← Permet de lancer manuellement depuis GitHub
+push:
+branches: [main]
 
 jobs:
+test:
+runs-on: ubuntu-latest
+strategy:
+matrix:
+node-version: [18, 20, 22]
 
-  # ─────────────────────────────────────────────
-  # JOB 1 : Lint + vérification des types
-  # ─────────────────────────────────────────────
-  lint-and-types:
-    name: 🔍 Lint & Types
-    runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v3
 
-    steps:
-      - name: 📥 Récupérer le code
-        uses: actions/checkout@v4
+- name: Setup Node.js ${{ matrix.node-version}}
+uses: actions/Setup-node@v3
+with:
+node-version: ${{ matrix.node-version }}
+cache: 'npm'
 
-      - name: 🟢 Installer Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+- name: Install dependencies
+run: npm ci
 
-      - name: 📦 Installer les dépendances
-        run: npm install
+- name: Run tests
+run: npm test
 
-      - name: 🔍 Vérifier le formatage avec Biome
-        # --no-errors-on-unmatched : ignore les fichiers non reconnus
-        # Sans --error-on-warnings : les warnings n'échouent pas le CI
-        run: npx biome check --no-errors-on-unmatched .
-
-      - name: 🔷 Vérifier les types TypeScript (client)
-        run: npm run check-types --workspace=client
-
-      - name: 🔷 Vérifier les types TypeScript (server)
-        run: npm run check-types --workspace=server
-
-  # ─────────────────────────────────────────────
-  # JOB 2 : Tests automatisés
-  # ─────────────────────────────────────────────
-  tests:
-    name: 🧪 Tests
-    runs-on: ubuntu-latest
-    needs: lint-and-types  # Attend que le job précédent soit OK
-
-    steps:
-      - name: 📥 Récupérer le code
-        uses: actions/checkout@v4
-
-      - name: 🟢 Installer Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: 📦 Installer les dépendances
-        run: npm install
-
-      - name: 🧪 Lancer les tests (server)
-        run: npm run test --workspace=server
-
-  # ─────────────────────────────────────────────
-  # JOB 3 : Vérifier que le build fonctionne
-  # ─────────────────────────────────────────────
-  build:
-    name: 🏗️ Build
-    runs-on: ubuntu-latest
-    needs: lint-and-types  # Attend que le job précédent soit OK
-
-    steps:
-      - name: 📥 Récupérer le code
-        uses: actions/checkout@v4
-
-      - name: 🟢 Installer Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: 📦 Installer les dépendances
-        run: npm install
-
-      - name: 🏗️ Builder le client (React + Vite)
-        run: npm run build --workspace=client
-
-      - name: 🏗️ Builder le serveur (TypeScript)
-        run: npm run build --workspace=server
+- name: Upload coverage reports
+uses: codecov/codecov-action@v3

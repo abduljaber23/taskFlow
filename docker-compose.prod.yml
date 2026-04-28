@@ -16,7 +16,9 @@ services:
       - 3310:3310
     env_file:
       - ./server/.env
-    command: sh -c "node dist/main.js"
+    environment:
+      - CLIENT_URL=http://localhost
+    command: sh -c "npm run db:migrate:prod && node dist/src/main.js"
     depends_on:
       database:
         condition: service_healthy
@@ -30,7 +32,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uuser", "-ppassword" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot" ]
       interval: 5s
       timeout: 5s
       retries: 20

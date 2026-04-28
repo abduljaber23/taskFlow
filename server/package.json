@@ -5,6 +5,7 @@
     "dev": "tsx watch --clear-screen=false ./src/main",
     "db:migrate": "tsx ./bin/migrate",
     "db:seed": "tsx ./bin/seed",
+    "db:migrate:prod": "node dist/bin/migrate.js",
     "build": "tsx ./bin/migrate",
     "start": "tsx ./src/main",
     "test": "jest --verbose"
